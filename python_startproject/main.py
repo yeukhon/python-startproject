@@ -1,5 +1,7 @@
 import collections
 import os
+from codecs import open
+
 import jinja2
 
 Entry = collections.namedtuple("Entry", ["name", "default"])
@@ -36,25 +38,23 @@ setup(
     version="{{ version }}",
     description="{{ description }}",
     author="{{ author }}",
-    author_email=" {{ email }}",
     packages={{ packages }},
     install_requires=[{{ install_requires }}]
 )
 """
 
-DEFAULTS = [
-    Entry(name="name", default=set_project_name),
-    Entry(name="version", default=set_version),
-    Entry(name="description", default=set_description),
-    Entry(name="author", default=set_author),
-    Entry(name="packages", default=set_packages),
-    Entry(name="install_requires", default=set_install_requires)
-]
+#DEFAULTS = [
+#    Entry(name="name", default=set_project_name),
+#    Entry(name="version", default=set_version),
+#    Entry(name="description", default=set_description),
+#    Entry(name="author", default=set_author),
+#    Entry(name="packages", default=set_packages),
+#    Entry(name="install_requires", default=set_install_requires)
+#]
 
 def template_setuppy(configs):
     template = jinja2.Template(SETUPPY_TEMPLATE)
     output = template.render(configs)
-    print output
     return output
 
 def create_project(project_name):
@@ -62,7 +62,16 @@ def create_project(project_name):
     project_dir = os.path.join(curr_dir, project_name)
     os.mkdir(project_dir)
     setuppy_path = os.path.join(project_dir, "setup.py")
-    with open(setuppy_path, "w+") as f:
-        d = DEFAULTS + [""]
-        output = '=""\n'.join(d)
-        f.write(output)
+
+    configs = {
+        "name": project_name,
+        "version": "0.1",
+        "description": "",
+        "author": "",
+        "packages": "find_packages()",
+        "install_requires": ""
+    }
+
+    setuppy_text = template_setuppy(configs)
+    with open(setuppy_path, "w+", encoding='utf-8') as f:
+        f.write(setuppy_text)

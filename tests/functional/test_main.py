@@ -1,5 +1,6 @@
 import os
 import tempfile
+import shutil
 import unittest
 try:
     from unittest.mock import patch
@@ -9,7 +10,6 @@ except ImportError:
 from python_startproject import main
 
 class BaseTestCase(unittest.TestCase):
-    __test__ = False
 
     def setUp(self):
         # Creates a temporary directory as a base directory
@@ -25,7 +25,7 @@ class BaseTestCase(unittest.TestCase):
         self.default_install_requires = ""
 
     def tearDown(self):
-        os.rmdir(self.home_dir)
+        shutil.rmtree(self.home_dir)
 
     def read_setuppy(self, path):
         setuppy_path = self._full_path(path, "setup.py")
@@ -84,13 +84,8 @@ class BaseTestCase(unittest.TestCase):
 
 class TestMainAsFunction(BaseTestCase):
 
-    def setUp(self):
-        super(TestMainAsFunction, self).setUp()
-
     @patch("os.getcwd") 
     def test_create_project_with_default_options(self, mk_cwd):
-        """Should create the skeleton at the current
-        directory and using the name provided."""
         # First, fake current directory to our home_dir
         mk_cwd.return_value = self.home_dir
         main.create_project(self.project_name)
@@ -98,7 +93,7 @@ class TestMainAsFunction(BaseTestCase):
         project_path = self._full_path(self.home_dir,
             self.project_name)
         self.assert_dir_created(project_path)
-        self.assert_setuppy_file_is_default(project_path)
+        self.assert_setuppy_file_used_default(project_path)
 
 
 class TestTemplateSetuppy(BaseTestCase):
