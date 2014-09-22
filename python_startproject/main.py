@@ -57,8 +57,8 @@ def template_setuppy(configs):
     output = template.render(configs)
     return output
 
-def create_project(project_name):
-    curr_dir = os.getcwd()
+def create_project(project_name, **options):
+    curr_dir = options.get("dest_dir", os.getcwd())
     project_dir = os.path.join(curr_dir, project_name)
     os.mkdir(project_dir)
     setuppy_path = os.path.join(project_dir, "setup.py")
