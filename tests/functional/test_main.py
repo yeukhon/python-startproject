@@ -112,7 +112,8 @@ class TestMainAsFunction(BaseTestCase):
         self.assert_dir_created(project_path)
         self.assert_setuppy_file_used_default(project_path)
 
-    def test_create_project_with_dir_option(self):
+    @patch("os.getcwd")
+    def test_create_project_with_dir_option(self, mk_cwd):
         main.create_project(self.project_name,
             dest_dir=self.home_dir)
         project_path = self._full_path(self.home_dir, self.project_name)
