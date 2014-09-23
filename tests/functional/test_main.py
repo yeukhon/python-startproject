@@ -131,6 +131,16 @@ class TestMainAsFunction(BaseTestCase):
         self.assert_setuppy_file_used_default_except(project_path, {
             "name": expected_name})
 
+    @patch("os.getcwd")
+    def test_create_project_specify_version(self, mk_cwd):
+        mk_cwd.return_value = self.home_dir
+        version = "0.0"
+        project_path = self._full_path(self.home_dir, self.project_name)
+        main.create_project(self.project_name, version=version)
+        self.assert_dir_created(project_path)
+        self.assert_setuppy_file_used_default_except(project_path, {
+            "version": version})
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):

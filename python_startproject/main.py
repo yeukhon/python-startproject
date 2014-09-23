@@ -65,9 +65,12 @@ def create_project(project_name, **options):
 
     if "-" in project_name:
         project_name = project_name.replace("-", "_")
+
+    version = options.get("version", "0.1")
+
     configs = {
         "name": project_name,
-        "version": "0.1",
+        "version": version,
         "description": "",
         "author": "",
         "packages": "find_packages()",
