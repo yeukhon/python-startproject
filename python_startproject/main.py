@@ -63,6 +63,8 @@ def create_project(project_name, **options):
     os.mkdir(project_dir)
     setuppy_path = os.path.join(project_dir, "setup.py")
 
+    if "-" in project_name:
+        project_name = project_name.replace("-", "_")
     configs = {
         "name": project_name,
         "version": "0.1",

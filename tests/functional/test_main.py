@@ -73,14 +73,31 @@ class BaseTestCase(unittest.TestCase):
         text = self.read_setuppy(path)
         self.assert_setuppy_used_default(text)
 
-    def assert_setuppy_used_default(self, text):
-        self.assert_name(text, self.project_name)
-        self.assert_version(text, self.default_version)
-        self.assert_description(text, self.default_description)
-        self.assert_author(text, self.default_author)
-        self.assert_packages(text, self.default_packages)
-        self.assert_install_requires(text,
-            self.default_install_requires)
+    def assert_setuppy_used_default(self, text, **options):
+        assertions = {
+            "name": self.assert_name,
+            "version": self.assert_version,
+            "description": self.assert_description,
+            "author": self.assert_author,
+            "packages": self.assert_packages,
+            "install_requires": self.assert_install_requires
+        }
+        assertions["name"](text,
+            options.get("name", self.project_name))
+        assertions["version"](text,
+            options.get("version", self.default_version))
+        assertions["description"](text,
+            options.get("description", self.default_description))
+        assertions["author"](text,
+            options.get("author", self.default_author))
+        assertions["packages"](text,
+            options.get("packages", self.default_packages))
+        assertions["install_requires"](text,
+            options.get("install_requires", self.default_install_requires))
+
+    def assert_setuppy_file_used_default_except(self, path, options):
+        text = self.read_setuppy(path)
+        self.assert_setuppy_used_default(text, **options)
 
 class TestMainAsFunction(BaseTestCase):
 
@@ -101,6 +118,17 @@ class TestMainAsFunction(BaseTestCase):
         project_path = self._full_path(self.home_dir, self.project_name)
         self.assert_dir_created(project_path)
         self.assert_setuppy_file_used_default(project_path)
+
+    @patch("os.getcwd")
+    def test_create_project_converts_dash_name_to_underscore(self, mk_cwd):
+        expected_name = self.project_name + "_1"
+        self.project_name += "-1"
+        project_path = self._full_path(self.home_dir, self.project_name)
+        mk_cwd.return_value = self.home_dir
+        main.create_project(self.project_name)
+        self.assert_dir_created(project_path)
+        self.assert_setuppy_file_used_default_except(project_path, {
+            "name": expected_name})
 
 class TestTemplateSetuppy(BaseTestCase):
 
