@@ -68,6 +68,10 @@ def create_project(project_name, **options):
     version = options.get("version", "0.1")
     description = options.get("description", "")
     author = options.get("author", "")
+    install_requires = options.get("install_requires", "")
+
+    if install_requires:
+        install_requires = ",".join(install_requires)
 
     configs = {
         "name": project_name,
@@ -75,7 +79,7 @@ def create_project(project_name, **options):
         "description": description,
         "author": author,
         "packages": "find_packages()",
-        "install_requires": ""
+        "install_requires": install_requires
     }
 
     setuppy_text = template_setuppy(configs)

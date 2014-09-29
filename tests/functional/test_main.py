@@ -161,6 +161,17 @@ class TestMainAsFunction(BaseTestCase):
         self.assert_setuppy_file_used_default_except(project_path, {
             "author": author})
 
+    @patch("os.getcwd")
+    def test_specify_install_requires(self, mk_cwd):
+        mk_cwd.return_value = self.home_dir
+        install_requires = ["first", "second"]
+        project_path = self._full_path(self.home_dir, self.project_name)
+        main.create_project(self.project_name,
+            install_requires=install_requires)
+        self.assert_dir_created(project_path)
+        self.assert_setuppy_file_used_default_except(project_path, {
+            "install_requires": ",".join(install_requires)})
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):
