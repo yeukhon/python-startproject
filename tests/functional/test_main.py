@@ -151,6 +151,16 @@ class TestMainAsFunction(BaseTestCase):
         self.assert_setuppy_file_used_default_except(project_path, {
             "description": description})
 
+    @patch("os.getcwd")
+    def test_specify_author(self, mk_cwd):
+        mk_cwd.return_value = self.home_dir
+        author = "Bob"
+        project_path = self._full_path(self.home_dir, self.project_name)
+        main.create_project(self.project_name, author=author)
+        self.assert_dir_created(project_path)
+        self.assert_setuppy_file_used_default_except(project_path, {
+            "author": author})
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):

@@ -67,12 +67,13 @@ def create_project(project_name, **options):
         project_name = project_name.replace("-", "_")
     version = options.get("version", "0.1")
     description = options.get("description", "")
+    author = options.get("author", "")
 
     configs = {
         "name": project_name,
         "version": version,
         "description": description,
-        "author": "",
+        "author": author,
         "packages": "find_packages()",
         "install_requires": ""
     }
