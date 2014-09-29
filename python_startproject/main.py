@@ -1,3 +1,4 @@
+import argparse
 import collections
 import os
 from codecs import open
@@ -85,3 +86,11 @@ def create_project(project_name, **options):
     setuppy_text = template_setuppy(configs)
     with open(setuppy_path, "w+", encoding='utf-8') as f:
         f.write(setuppy_text)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate Python project skeleton")
+    parser.add_argument("name",
+        help="The name of the new Python project. Unless --package-name is specified, \
+this name is used (with dashes converted to underscore) as both the name of the \
+directory and the name of the actual Python package (the name used to import).")
+    args = parser.parse_args()
