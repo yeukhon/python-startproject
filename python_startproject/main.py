@@ -1,6 +1,7 @@
 import argparse
 import collections
 import os
+import sys
 from codecs import open
 
 import jinja2
@@ -87,10 +88,10 @@ def create_project(project_name, **options):
     with open(setuppy_path, "w+", encoding='utf-8') as f:
         f.write(setuppy_text)
 
-if __name__ == "__main__":
+def parse_args(args):
     parser = argparse.ArgumentParser(description="Generate Python project skeleton")
-    parser.add_argument("name",
+    parser.add_argument("project_name",
         help="The name of the new Python project. Unless --package-name is specified, \
 this name is used (with dashes converted to underscore) as both the name of the \
 directory and the name of the actual Python package (the name used to import).")
-    args = parser.parse_args()
+    return parser.parse_args(args)

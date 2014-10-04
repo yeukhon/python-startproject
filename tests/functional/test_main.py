@@ -172,6 +172,11 @@ class TestMainAsFunction(BaseTestCase):
         self.assert_setuppy_file_used_default_except(project_path, {
             "install_requires": ",".join(install_requires)})
 
+class TestParseArgs(BaseTestCase):
+    def test_use_default(self):
+        args = main.parse_args([self.project_name])
+        self.assertEqual(args.project_name, self.project_name)
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):
