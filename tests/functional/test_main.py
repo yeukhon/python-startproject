@@ -24,8 +24,15 @@ class BaseTestCase(unittest.TestCase):
         self.default_packages = "find_packages()"
         self.default_install_requires = ""
 
+        self.project_path = self._full_path(self.home_dir,
+            self.project_name)
+
+        self.mk_cwd = patch("os.getcwd").start()
+        self.mk_cwd.return_value = self.home_dir
+
     def tearDown(self):
         shutil.rmtree(self.home_dir)
+        self.mk_cwd.stop()
 
     def read_setuppy(self, path):
         setuppy_path = self._full_path(path, "setup.py")
@@ -100,77 +107,58 @@ class BaseTestCase(unittest.TestCase):
         self.assert_setuppy_used_default(text, **options)
 
 class TestMainAsFunction(BaseTestCase):
-
-    @patch("os.getcwd") 
-    def test_create_project_with_default_options(self, mk_cwd):
+    def test_create_project_with_default_options(self):
         # First, fake current directory to our home_dir
-        mk_cwd.return_value = self.home_dir
         main.create_project(self.project_name)
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default(self.project_path)
 
-        project_path = self._full_path(self.home_dir,
-            self.project_name)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default(project_path)
-
-    @patch("os.getcwd")
-    def test_create_project_with_dir_option(self, mk_cwd):
+    def test_create_project_with_dir_option(self):
         main.create_project(self.project_name,
             dest_dir=self.home_dir)
-        project_path = self._full_path(self.home_dir, self.project_name)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default(project_path)
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default(self.project_path)
 
-    @patch("os.getcwd")
-    def test_create_project_converts_dash_name_to_underscore(self, mk_cwd):
+    def test_create_project_converts_dash_name_to_underscore(self):
         expected_name = self.project_name + "_1"
         self.project_name += "-1"
-        project_path = self._full_path(self.home_dir, self.project_name)
-        mk_cwd.return_value = self.home_dir
+        # Override the default project path
+        self.project_path = self._full_path(self.home_dir,
+            self.project_name)
         main.create_project(self.project_name)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default_except(project_path, {
-            "name": expected_name})
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default_except(
+            self.project_path, {"name": expected_name})
 
-    @patch("os.getcwd")
-    def test_create_project_specify_version(self, mk_cwd):
-        mk_cwd.return_value = self.home_dir
+    def test_create_project_specify_version(self):
         version = "0.0"
-        project_path = self._full_path(self.home_dir, self.project_name)
         main.create_project(self.project_name, version=version)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default_except(project_path, {
-            "version": version})
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default_except(
+            self.project_path, {"version": version})
 
-    @patch("os.getcwd")
-    def test_create_project_specify_description(self, mk_cwd):
-        mk_cwd.return_value = self.home_dir
+    def test_create_project_specify_description(self):
         description = "This is a nice package"
-        project_path = self._full_path(self.home_dir, self.project_name)
         main.create_project(self.project_name, description=description)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default_except(project_path, {
-            "description": description})
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default_except(
+            self.project_path, {"description": description})
 
-    @patch("os.getcwd")
-    def test_specify_author(self, mk_cwd):
-        mk_cwd.return_value = self.home_dir
+    def test_specify_author(self):
         author = "Bob"
-        project_path = self._full_path(self.home_dir, self.project_name)
         main.create_project(self.project_name, author=author)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default_except(project_path, {
-            "author": author})
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default_except(
+            self.project_path, {"author": author})
 
-    @patch("os.getcwd")
-    def test_specify_install_requires(self, mk_cwd):
-        mk_cwd.return_value = self.home_dir
+    def test_specify_install_requires(self):
         install_requires = ["first", "second"]
-        project_path = self._full_path(self.home_dir, self.project_name)
         main.create_project(self.project_name,
             install_requires=install_requires)
-        self.assert_dir_created(project_path)
-        self.assert_setuppy_file_used_default_except(project_path, {
-            "install_requires": ",".join(install_requires)})
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default_except(
+            self.project_path,
+            {"install_requires": ",".join(install_requires)})
 
 class TestParseArgs(BaseTestCase):
     def test_use_default(self):
