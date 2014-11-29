@@ -59,6 +59,7 @@ def template_setuppy(configs):
     output = template.render(configs)
     return output
 
+#TODO: Maybe don't pass dict-based options, use args from argparse
 def create_project(project_name, **options):
     curr_dir = options.get("dest_dir", os.getcwd())
     project_dir = os.path.join(curr_dir, project_name)
@@ -105,4 +106,7 @@ directory and the name of the actual Python package (the name used to import).")
 Project name can be different. By default if package-name is not specified, \
 project name is used and dashes will be converted to underscore and if \
 the project name is not a valid Python ID we will raise an exception.")
+    parser.add_argument("--version", action="store", default="0.1",
+        help="--version: allows user to specify the starting version number. \
+By default this is 0.1.")
     return parser.parse_args(args)

@@ -180,6 +180,10 @@ class TestParseArgs(BaseTestCase):
         args = main.parse_args([self.project_name])
         self.assertEqual(args.package_name, None)
 
+    def test_version_is_default_to_0_dot_1(self):
+        args = main.parse_args([self.project_name])
+        self.assertEqual(args.version, "0.1")
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):
