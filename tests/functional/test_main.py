@@ -171,6 +171,7 @@ class TestMainAsFunction(BaseTestCase):
             self.project_path,
             {"install_requires": ",".join(install_requires)})
 
+
 class TestParseArgs(BaseTestCase):
     def test_use_default(self):
         args = main.parse_args([self.project_name])
@@ -191,6 +192,14 @@ class TestParseArgs(BaseTestCase):
     def test_author_is_optional(self):
         args = main.parse_args([self.project_name])
         self.assertEqual(args.author, "")
+
+    def test_css_to_list_produces_empty_list_on_empty(self):
+        result = main.css_to_list(None)
+        self.assertEqual(result, [])
+
+    def test_css_to_list_produces_list_on_comma_string(self):
+        result = main.css_to_list("1,2")
+        self.assertEqual(result, ["1", "2"])
 
 class TestTemplateSetuppy(BaseTestCase):
 

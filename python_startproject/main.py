@@ -95,6 +95,12 @@ def create_project(project_name, **options):
     with open(setuppy_path, "w+", encoding='utf-8') as f:
         f.write(setuppy_text)
 
+def css_to_list(requires):
+    if requires:
+        return filter(None, requires.split(","))
+    else:
+        return []
+
 def parse_args(args):
     parser = argparse.ArgumentParser(description="Generate Python project skeleton")
     parser.add_argument("project_name",
@@ -113,4 +119,7 @@ By default this is 0.1.")
         help="A one-line summary about the project. Default is no summary.")
     parser.add_argument("--author", action="store", default="",
         help="Author name of this project. Default is no author.")
+    parser.add_argument("--install_requires", action="store",
+        type=css_to_list,
+        help="A comma-separated string of packages required. Default is none.")
     return parser.parse_args(args)
