@@ -188,6 +188,10 @@ class TestParseArgs(BaseTestCase):
         args = main.parse_args([self.project_name])
         self.assertEqual(args.description, "")
 
+    def test_author_is_optional(self):
+        args = main.parse_args([self.project_name])
+        self.assertEqual(args.author, "")
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):

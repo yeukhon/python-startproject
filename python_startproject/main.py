@@ -111,4 +111,6 @@ the project name is not a valid Python ID we will raise an exception.")
 By default this is 0.1.")
     parser.add_argument("--description", action="store", default="",
         help="A one-line summary about the project. Default is no summary.")
+    parser.add_argument("--author", action="store", default="",
+        help="Author name of this project. Default is no author.")
     return parser.parse_args(args)
