@@ -109,4 +109,6 @@ the project name is not a valid Python ID we will raise an exception.")
     parser.add_argument("--version", action="store", default="0.1",
         help="--version: allows user to specify the starting version number. \
 By default this is 0.1.")
+    parser.add_argument("--description", action="store", default="",
+        help="A one-line summary about the project. Default is no summary.")
     return parser.parse_args(args)

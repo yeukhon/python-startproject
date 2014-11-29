@@ -184,6 +184,10 @@ class TestParseArgs(BaseTestCase):
         args = main.parse_args([self.project_name])
         self.assertEqual(args.version, "0.1")
 
+    def test_description_is_optional(self):
+        args = main.parse_args([self.project_name])
+        self.assertEqual(args.description, "")
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):
