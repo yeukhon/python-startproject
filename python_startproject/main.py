@@ -65,8 +65,14 @@ def create_project(project_name, **options):
     os.mkdir(project_dir)
     setuppy_path = os.path.join(project_dir, "setup.py")
 
-    if "-" in project_name:
-        project_name = project_name.replace("-", "_")
+    # Package name must always be a valid Python ID.
+    if options.get("package_name"):
+        package_name = options["package_name"].replace("-", "_")
+    else:
+        if "-" in project_name:
+            project_name = project_name.replace("-", "_")
+        package_name = project_name
+
     version = options.get("version", "0.1")
     description = options.get("description", "")
     author = options.get("author", "")

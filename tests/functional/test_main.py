@@ -15,6 +15,7 @@ class BaseTestCase(unittest.TestCase):
         # Creates a temporary directory as a base directory
         self.home_dir = tempfile.mkdtemp()
         self.project_name = "sample"
+        self.package_name = "sample_package"
 
         # Default checklist. These are hardcoded but we can
         # the difference against the code in our tests.
@@ -129,6 +130,16 @@ class TestMainAsFunction(BaseTestCase):
         self.assert_dir_created(self.project_path)
         self.assert_setuppy_file_used_default_except(
             self.project_path, {"name": expected_name})
+
+    def test_project_name_untouched_when_package_name_is_given(self):
+        expected_project_name = self.project_name
+        self.project_path = self._full_path(self.home_dir,
+            self.project_name)
+        main.create_project(self.project_name,
+            **{"package_name": self.package_name})
+        self.assert_dir_created(self.project_path)
+        self.assert_setuppy_file_used_default_except(
+            self.project_path, {"name": expected_project_name})
 
     def test_create_project_specify_version(self):
         version = "0.0"
