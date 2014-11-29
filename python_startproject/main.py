@@ -94,4 +94,9 @@ def parse_args(args):
         help="The name of the new Python project. Unless --package-name is specified, \
 this name is used (with dashes converted to underscore) as both the name of the \
 directory and the name of the actual Python package (the name used to import).")
+    parser.add_argument("--package_name", action="store",
+        help="--package_name: allows user to specify the actual name of the package. \
+Project name can be different. By default if package-name is not specified, \
+project name is used and dashes will be converted to underscore and if \
+the project name is not a valid Python ID we will raise an exception.")
     return parser.parse_args(args)

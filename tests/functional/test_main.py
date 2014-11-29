@@ -165,6 +165,10 @@ class TestParseArgs(BaseTestCase):
         args = main.parse_args([self.project_name])
         self.assertEqual(args.project_name, self.project_name)
 
+    def test_package_name_is_optional(self):
+        args = main.parse_args([self.project_name])
+        self.assertEqual(args.package_name, None)
+
 class TestTemplateSetuppy(BaseTestCase):
 
     def setUp(self):
